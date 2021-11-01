@@ -1,6 +1,7 @@
 <resources>
-    <string name="app_name">LoLWishList</string>
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="app_name">LoLWishlist</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="retry">Retry</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="all_skins">All Skins</string>
 </resources>

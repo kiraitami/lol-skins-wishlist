@@ -1,4 +1,4 @@
-package com.l.lolwishlist.model
+package com.l.lolwishlist.data.model
 
 sealed class Result<T>(
     val data: T? = null,
@@ -6,8 +6,8 @@ sealed class Result<T>(
 ) {
 
     class Loading<T>(data: T? = null) : Result<T>(data)
-    class Success<T>(data: T?) : Result<T>(data)
-    class Error<T>(exception: Exception?) : Result<T>(null, exception)
+    class Success<T>(data: T) : Result<T>(data)
+    class Error<T>(exception: Exception) : Result<T>(null, exception)
 
     inline fun handle(
         onLoading: (() -> Unit) = {},

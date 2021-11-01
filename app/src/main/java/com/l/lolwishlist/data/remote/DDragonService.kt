@@ -1,7 +1,7 @@
-package com.l.lolwishlist.api
+package com.l.lolwishlist.data.remote
 
-import com.l.lolwishlist.model.ChampionDetails
-import com.l.lolwishlist.model.ChampionsResponse
+import com.l.lolwishlist.data.model.ChampionDetailsResponse
+import com.l.lolwishlist.data.model.ChampionsBaseResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
@@ -15,16 +15,18 @@ interface DDragonService {
     @GET("cdn/{version}/data/en_US/champion.json")
     suspend fun getChampionsBase(
         @Path("version") version: String
-    ): ChampionsResponse
+    ): ChampionsBaseResponse
 
     @GET("cdn/{version}/data/en_US/champion/{championId}.json")
     suspend fun getChampionDetails(
         @Path("version") version: String,
         @Path("championId") championId: String
-    ): ChampionDetails
+    ): ChampionDetailsResponse
 
     companion object {
-        private const val BASE_URL = "https://ddragon.leagueoflegends.com"
+        const val BASE_URL = "https://ddragon.leagueoflegends.com"
+
+        fun getLoginScreenImageUrl(championId: String, skinNum: Int) = BASE_URL + "/cdn/img/champion/loading/${championId}_${skinNum}.jpg"
 
         fun create(): DDragonService = Retrofit.Builder()
             .baseUrl(BASE_URL)

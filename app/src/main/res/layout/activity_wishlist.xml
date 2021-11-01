@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.skin.AllSkinsFragment"
+    tools:context=".ui.wishlist.WishlistActivity"
     android:orientation="vertical"
     >
 
@@ -13,8 +13,9 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="34sp"
-        tools:text="@tools:sample/cities" />
+        android:textSize="@dimen/activity_title_size"
+        android:textStyle="bold"
+        android:text="@string/wishlist" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerSkins"
@@ -28,4 +29,5 @@
         tools:itemCount="10"
         tools:listitem="@layout/adapter_skin"
         />
+
 </LinearLayout>
