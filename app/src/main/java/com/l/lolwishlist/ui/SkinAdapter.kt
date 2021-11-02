@@ -2,6 +2,8 @@ package com.l.lolwishlist.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.core.text.PrecomputedTextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.l.lolwishlist.R
 import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.databinding.AdapterSkinBinding
@@ -31,6 +34,7 @@ class SkinAdapter(
         fun bind(skin: Skin, position: Int) {
             binding.run {
                 glide.load(skin.imageUrl)
+                    .transition(DrawableTransitionOptions.withCrossFade())
                     .fitCenter()
                     .override(480, 720)
                     .into(image)

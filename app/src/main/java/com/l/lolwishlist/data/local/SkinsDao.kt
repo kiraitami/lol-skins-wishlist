@@ -13,7 +13,10 @@ interface SkinsDao {
     fun loadSkins(): Flow<List<Skin>>
 
     @Query("SELECT * FROM skin WHERE selected = 1")
-    fun loadSelectedSkins(): Flow<List<Skin>>
+    fun loadMyWishlistSkins(): Flow<List<Skin>>
+
+    @Query("SELECT * FROM skin WHERE championId LIKE '%' || :query || '%' OR name LIKE '%' || :query || '%'")
+    fun querySkinsByName(query: String): Flow<List<Skin>>
 
     @Insert(entity = Skin::class, onConflict = OnConflictStrategy.REPLACE)
     fun updateSkin(skin: Skin)

@@ -9,9 +9,15 @@ import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.data.networkBoundResource
 import com.l.lolwishlist.data.remote.DDragonService
 import com.l.lolwishlist.utils.removeThrash
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val version = "11.21.1"
@@ -20,6 +26,9 @@ class DDragonRepository @Inject constructor(
     private val service: DDragonService,
     private val database: DDragonDatabase
 ) {
+
+    private var queryJob: Job? = null
+
     @ExperimentalCoroutinesApi
     fun getAllSkins() = networkBoundResource(
         fromRoom = { database.skinsDao().loadSkins() },
@@ -41,13 +50,37 @@ class DDragonRepository @Inject constructor(
             trySend(Result.Loading<List<Skin>>())
 
             database.withTransaction {
-                val selectedSkins = database.skinsDao().loadSelectedSkins().first()
+                val selectedSkins = database.skinsDao().loadMyWishlistSkins().first()
                 trySend(Result.Success<List<Skin>>(selectedSkins))
             }
         }
         catch (e: Exception) {
             trySend(Result.Error<List<Skin>>(e))
         }
+        awaitClose {  }
+    }
+
+    @ExperimentalCoroutinesApi
+    suspend fun querySkinsByName(query: String) = callbackFlow {
+        queryJob?.cancel()
+        queryJob = launch (Dispatchers.IO) {
+            try {
+                trySend(Result.Loading<List<Skin>>())
+
+                database.withTransaction {
+                    database.skinsDao().querySkinsByName(query)
+                        .onEach {
+                            trySend(Result.Success<List<Skin>>(it))
+                        }
+                        .launchIn(this)
+                }
+            }
+            catch (e: Exception) {
+                trySend(Result.Error<List<Skin>>(e))
+            }
+        }
+
+        awaitClose {  }
     }
 
 

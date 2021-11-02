@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.core.view.doOnAttach
@@ -55,6 +56,14 @@ class SearchView @JvmOverloads constructor(
                         handleButtonIcon(it)
                     }
                     .launchIn(lifecycleCoroutineScope)
+            }
+
+            binding.inputSearch.setOnEditorActionListener { _, actionId, _ ->
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    onSearchClick?.invoke()
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
             }
         }
     }

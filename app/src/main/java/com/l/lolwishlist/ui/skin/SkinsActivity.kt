@@ -73,7 +73,7 @@ class SkinsActivity : AppCompatActivity() {
     }
 
     private fun setObservers() {
-        viewModel.champions.observe(this) { result ->
+        viewModel.skins.observe(this) { result ->
             result.handle(
                 onLoading = {
 
@@ -96,7 +96,7 @@ class SkinsActivity : AppCompatActivity() {
         }
 
         binding.searchView.onTextWatch = {
-            println(it)
+            viewModel.updateQuery(it)
         }
 
     }
@@ -104,6 +104,10 @@ class SkinsActivity : AppCompatActivity() {
     private fun setButtons() {
         binding.searchView.onCloseClick = {
             hideSearchView()
+        }
+
+        binding.searchView.onSearchClick = {
+            binding.searchView.editText.hideKeyboard(this)
         }
 
         binding.fabSearch.setOnClickListener {
@@ -121,6 +125,7 @@ class SkinsActivity : AppCompatActivity() {
         binding.searchView.isVisible = false
         binding.fabSearch.isVisible = true
         binding.searchView.editText.hideKeyboard(this)
+        binding.searchView.editText.text = null
     }
 
 }
