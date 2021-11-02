@@ -11,7 +11,7 @@ data class Skin(
     val num: Int,
     val championName: String = "",
     val championId: String = "",
-    val selected: Boolean = false,
+    var selected: Boolean = false,
 ) {
     val imageUrl: String
         get() = DDragonService.getLoginScreenImageUrl(championId, num)

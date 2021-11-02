@@ -2,15 +2,12 @@ package com.l.lolwishlist.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
 import androidx.core.text.PrecomputedTextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
-import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.l.lolwishlist.R
 import com.l.lolwishlist.data.model.Skin
@@ -20,15 +17,13 @@ import com.l.lolwishlist.databinding.AdapterSkinSeparatorBinding
 
 class SkinAdapter(
     private val glide: RequestManager,
-    private val onSkinClick: (skin: Skin, position: Int) -> Unit,
-    private val onMySkinClick: (skin: Skin, position: Int) -> Unit,
+    private val onSkinClick: (skin: Skin, position: Int) -> Unit
 ) : ListAdapter<SkinUIModel, RecyclerView.ViewHolder>(DIFF) {
 
     class SkinViewHolder(
         private val glide: RequestManager,
         private val binding: AdapterSkinBinding,
-        private val onSkinClick: (skin: Skin, position: Int) -> Unit,
-        private val onMySkinClick: (skin: Skin, position: Int) -> Unit,
+        private val onSkinClick: (skin: Skin, position: Int) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(skin: Skin, position: Int) {
@@ -41,25 +36,21 @@ class SkinAdapter(
 
 
                 itemView.setOnClickListener {
-                    if (skin.selected) {
-                        onMySkinClick(skin, position)
-                    }
-                    else {
-                        onSkinClick(skin, position)
-                    }
+                    onSkinClick(skin, position)
                 }
+
+                isSelectedGroup.isVisible = skin.selected
             }
         }
 
         companion object {
-            fun create(parent: ViewGroup, glide: RequestManager, onSkinClick: (skin: Skin, position: Int) -> Unit, onMySkinClick: (skin: Skin, position: Int) -> Unit): SkinViewHolder =
+            fun create(parent: ViewGroup, glide: RequestManager, onSkinClick: (skin: Skin, position: Int) -> Unit): SkinViewHolder =
                 SkinViewHolder(
                     glide,
                     AdapterSkinBinding.inflate(
                         LayoutInflater.from(parent.context), parent, false
                     ),
-                    onSkinClick,
-                    onMySkinClick
+                    onSkinClick
                 )
         }
     }
@@ -90,7 +81,7 @@ class SkinAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            R.layout.adapter_skin -> SkinViewHolder.create(parent, glide, onSkinClick, onMySkinClick)
+            R.layout.adapter_skin -> SkinViewHolder.create(parent, glide, onSkinClick)
             R.layout.adapter_skin_separator -> SkinSeparatorViewHolder.create(parent)
             else -> throw IllegalStateException()
         }
@@ -109,6 +100,13 @@ class SkinAdapter(
             is SkinUIModel.Separator -> R.layout.adapter_skin_separator
             else -> throw IllegalStateException()
         }
+    }
+
+    fun notifySelected(position: Int) {
+        (getItem(position) as? SkinUIModel.SkinItem)?.let {
+            it.skin.selected = !it.skin.selected
+        }
+        notifyItemChanged(position)
     }
 
     companion object {

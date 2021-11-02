@@ -9,7 +9,7 @@ import com.l.lolwishlist.data.model.Converter
 import com.l.lolwishlist.data.model.PatchVersion
 import com.l.lolwishlist.data.model.Skin
 
-@Database(entities = [Skin::class, PatchVersion::class], version = 10, exportSchema = false)
+@Database(entities = [Skin::class, PatchVersion::class], version = 11, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class DDragonDatabase : RoomDatabase() {
 

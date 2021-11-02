@@ -1,26 +1,19 @@
 package com.l.lolwishlist.data.repository
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.l.lolwishlist.data.local.DDragonDatabase
-import com.l.lolwishlist.data.model.ChampionBase
-import com.l.lolwishlist.data.model.ChampionDetails
-import com.l.lolwishlist.data.model.Result
-import com.l.lolwishlist.data.model.Skin
-import com.l.lolwishlist.data.networkBoundResource
+import com.l.lolwishlist.data.model.*
 import com.l.lolwishlist.data.remote.DDragonService
 import com.l.lolwishlist.utils.removeThrash
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
-
-private const val version = "11.21.1"
 
 class DDragonRepository @Inject constructor(
     private val service: DDragonService,
@@ -29,20 +22,37 @@ class DDragonRepository @Inject constructor(
 
     private var queryJob: Job? = null
 
-    @ExperimentalCoroutinesApi
-    fun getAllSkins() = networkBoundResource(
-        fromRoom = { database.skinsDao().loadSkins() },
-        fromNetwork = {
-            val championsBase = service.getChampionsBase(version).data.values.removeThrash()
-            val championsDetails = buildChampionsDetails(version, championsBase)
-            buildSkins(championsDetails)
-        },
-        saveNetworkResult = {
-            database.withTransaction {
-                database.skinsDao().saveSkins(it)
+    fun getAllSkins() = flow<Result<List<Skin>>> {
+        val versionFromRoom = database.patchVersionDao().loadPatchVersion().firstOrNull()?.version
+        val versionFromNetwork = service.getVersions().first()
+        val skinsFromRoom = database.skinsDao().loadSkins().first()
+
+        if (versionFromRoom != versionFromNetwork) {
+            try {
+                val championsBase = service.getChampionsBase(versionFromNetwork).data.values.removeThrash()
+                val championsDetails = buildChampionsDetails(versionFromNetwork, championsBase)
+                val skinsFromNetwork = buildSkins(championsDetails)
+
+                database.skinsDao().saveSkins(skinsFromNetwork)
+                database.patchVersionDao().savePatchVersion(PatchVersion(version = versionFromNetwork))
+
+                emit(Result.Success(skinsFromNetwork))
+            }
+            catch (e: IOException) {
+                emit(Result.Success(skinsFromRoom))
+            }
+            catch (e: Exception) {
+                emit(Result.Success(skinsFromRoom))
             }
         }
-    )
+        else {
+            emit(Result.Success(skinsFromRoom))
+        }
+    }
+        .flowOn(Dispatchers.IO)
+        .onStart {
+            emit(Result.Loading())
+        }
 
     @ExperimentalCoroutinesApi
     suspend fun getSelectedSkins() = callbackFlow {
@@ -84,6 +94,26 @@ class DDragonRepository @Inject constructor(
     }
 
 
+    @ExperimentalCoroutinesApi
+    fun selectSkin(skinId: String, selected: Boolean) = callbackFlow {
+        try {
+            trySend(Result.Loading())
+            var updates = 0
+
+            database.withTransaction {
+                updates = database.skinsDao().updateSkin(skinId, selected)
+            }
+
+            Log.d("_SELEC_", "updates: $updates")
+
+            trySend(Result.Success(updates > 0))
+        }
+        catch (e: Exception) {
+            trySend(Result.Error<Boolean>(e))
+        }
+
+        awaitClose {  }
+    }
 
     private suspend fun buildChampionsDetails(version: String, championsBase: List<ChampionBase>): List<ChampionDetails> {
         val championsDetails = mutableListOf<ChampionDetails>()

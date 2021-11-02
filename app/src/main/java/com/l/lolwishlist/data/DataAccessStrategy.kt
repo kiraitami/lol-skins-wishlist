@@ -1,6 +1,5 @@
 package com.l.lolwishlist.data
 
-import android.util.Log
 import com.l.lolwishlist.data.model.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*

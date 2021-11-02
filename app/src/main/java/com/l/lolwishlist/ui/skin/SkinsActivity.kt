@@ -1,13 +1,14 @@
 package com.l.lolwishlist.ui.skin
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.l.lolwishlist.R
+import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.databinding.ActivitySkinsBinding
 import com.l.lolwishlist.ui.SkinAdapter
 import com.l.lolwishlist.ui.SkinUIModel
@@ -25,13 +26,8 @@ class SkinsActivity : AppCompatActivity() {
 
     private val adapterSkin: SkinAdapter by lazy {
         SkinAdapter(
-            Glide.with(this),
-            onSkinClick = { s, p ->
-
-            },
-            onMySkinClick = { s, p ->
-
-            }
+            glide = Glide.with(this),
+            onSkinClick = ::onSkinClick
         )
     }
 
@@ -112,6 +108,19 @@ class SkinsActivity : AppCompatActivity() {
 
         binding.fabSearch.setOnClickListener {
             showSearchView()
+        }
+    }
+
+    private fun onSkinClick(skin: Skin, position: Int) {
+        viewModel.updateSkinSelected(skin.id, !skin.selected).observe(this) { result ->
+            result.handle(
+                onSuccess = {
+                    adapterSkin.notifySelected(position)
+                },
+                onError = {
+                    Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
+                }
+            )
         }
     }
 
