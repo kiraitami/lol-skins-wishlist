@@ -33,7 +33,7 @@ class SearchView @JvmOverloads constructor(
     var onCloseClick: (() -> Unit)? = null
     var onSearchClick: (() -> Unit)? = null
     var onTextWatch: ((text: String) -> Unit)? = null
-    var shouldClose = false
+    private var shouldClose = false
 
     val editText: EditText
         get() = binding.inputSearch

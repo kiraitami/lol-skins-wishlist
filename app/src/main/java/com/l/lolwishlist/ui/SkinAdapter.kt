@@ -102,6 +102,18 @@ class SkinAdapter(
         }
     }
 
+    fun submitSkinList(list: List<Skin>?) {
+        val uiSkinModelList = mutableListOf<SkinUIModel>()
+
+        list?.groupBy { it.championName }
+            ?.forEach { (s, l) ->
+                uiSkinModelList.add(SkinUIModel.Separator(s))
+                uiSkinModelList.addAll(l.map { SkinUIModel.SkinItem(it) })
+            }
+
+        super.submitList(uiSkinModelList)
+    }
+
     fun notifySelected(position: Int) {
         (getItem(position) as? SkinUIModel.SkinItem)?.let {
             it.skin.selected = !it.skin.selected

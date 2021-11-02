@@ -11,8 +11,8 @@ import com.l.lolwishlist.R
 import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.databinding.ActivitySkinsBinding
 import com.l.lolwishlist.ui.SkinAdapter
-import com.l.lolwishlist.ui.SkinUIModel
 import com.l.lolwishlist.utils.hideKeyboard
+import com.l.lolwishlist.utils.setSafeOnClickListener
 import com.l.lolwishlist.utils.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
@@ -30,6 +30,8 @@ class SkinsActivity : AppCompatActivity() {
             onSkinClick = ::onSkinClick
         )
     }
+
+    private var shouldFilterSelectedSkins = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,31 +72,12 @@ class SkinsActivity : AppCompatActivity() {
 
     private fun setObservers() {
         viewModel.skins.observe(this) { result ->
-            result.handle(
-                onLoading = {
-
-                },
-                onSuccess = { list ->
-                    val uiSkinModelList = mutableListOf<SkinUIModel>()
-
-                    list?.groupBy { it.championName }
-                        ?.forEach { (s, l) ->
-                            uiSkinModelList.add(SkinUIModel.Separator(s))
-                            uiSkinModelList.addAll(l.map { SkinUIModel.SkinItem(it) })
-                        }
-
-                    adapterSkin.submitList(uiSkinModelList)
-                },
-                onError = {
-                    Toast.makeText(this, it?.message ?: "Error", Toast.LENGTH_SHORT).show()
-                }
-            )
+            adapterSkin.submitSkinList(result)
         }
 
         binding.searchView.onTextWatch = {
             viewModel.updateQuery(it)
         }
-
     }
 
     private fun setButtons() {
@@ -109,6 +92,19 @@ class SkinsActivity : AppCompatActivity() {
         binding.fabSearch.setOnClickListener {
             showSearchView()
         }
+
+        binding.selectedSkinsButton.setSafeOnClickListener {
+            shouldFilterSelectedSkins = !shouldFilterSelectedSkins
+
+            viewModel.shouldFilterSelected(shouldFilterSelectedSkins)
+
+            if (shouldFilterSelectedSkins) {
+                setWishlistSkinsView()
+            }
+            else {
+                setAllSkinsViews()
+            }
+        }
     }
 
     private fun onSkinClick(skin: Skin, position: Int) {
@@ -122,6 +118,18 @@ class SkinsActivity : AppCompatActivity() {
                 }
             )
         }
+    }
+
+    private fun setAllSkinsViews() {
+        binding.title.text = getString(R.string.all_skins)
+        binding.selectedSkinsButton.elevation = 8f
+        binding.selectedSkinsButton.translationZ = 8f
+    }
+
+    private fun setWishlistSkinsView() {
+        binding.title.text = getString(R.string.wishlist)
+        binding.selectedSkinsButton.elevation = 0f
+        binding.selectedSkinsButton.translationZ = 0f
     }
 
     private fun showSearchView() {

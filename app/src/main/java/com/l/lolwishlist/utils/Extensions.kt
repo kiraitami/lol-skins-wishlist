@@ -1,6 +1,7 @@
 package com.l.lolwishlist.utils
 
 import android.content.Context
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import com.l.lolwishlist.data.model.ChampionBase
@@ -30,4 +31,13 @@ fun EditText.hideKeyboard(context: Context) {
     clearFocus()
     val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(this.windowToken, 0)
+}
+
+fun View?.setSafeOnClickListener(waitInterval: Long = 850L, onSafeClick: (View) -> Unit) {
+    this ?: return
+    setOnClickListener(
+        SafeClickListener(waitInterval) {
+            onSafeClick(it)
+        }
+    )
 }

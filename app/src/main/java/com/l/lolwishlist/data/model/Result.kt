@@ -21,3 +21,12 @@ sealed class Result<T>(
         }
     }
 }
+
+fun <T> T?.toResult(): Result<T> {
+    return if (this == null) {
+        Result.Error(NullPointerException())
+    }
+    else {
+        Result.Success(this)
+    }
+}

@@ -1,6 +1,5 @@
 package com.l.lolwishlist.data.repository
 
-import android.util.Log
 import androidx.room.withTransaction
 import com.l.lolwishlist.data.local.DDragonDatabase
 import com.l.lolwishlist.data.model.*
@@ -8,10 +7,8 @@ import com.l.lolwishlist.data.remote.DDragonService
 import com.l.lolwishlist.utils.removeThrash
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import java.io.IOException
 import javax.inject.Inject
 
@@ -20,9 +17,7 @@ class DDragonRepository @Inject constructor(
     private val database: DDragonDatabase
 ) {
 
-    private var queryJob: Job? = null
-
-    fun getAllSkins() = flow<Result<List<Skin>>> {
+    fun getAllSkins() = flow<List<Skin>> {
         val versionFromRoom = database.patchVersionDao().loadPatchVersion().firstOrNull()?.version
         val versionFromNetwork = service.getVersions().first()
         val skinsFromRoom = database.skinsDao().loadSkins().first()
@@ -36,62 +31,20 @@ class DDragonRepository @Inject constructor(
                 database.skinsDao().saveSkins(skinsFromNetwork)
                 database.patchVersionDao().savePatchVersion(PatchVersion(version = versionFromNetwork))
 
-                emit(Result.Success(skinsFromNetwork))
+                emit(skinsFromNetwork)
             }
             catch (e: IOException) {
-                emit(Result.Success(skinsFromRoom))
+                emit(skinsFromRoom)
             }
             catch (e: Exception) {
-                emit(Result.Success(skinsFromRoom))
+                emit(skinsFromRoom)
             }
         }
         else {
-            emit(Result.Success(skinsFromRoom))
+            emit(skinsFromRoom)
         }
     }
         .flowOn(Dispatchers.IO)
-        .onStart {
-            emit(Result.Loading())
-        }
-
-    @ExperimentalCoroutinesApi
-    suspend fun getSelectedSkins() = callbackFlow {
-        try {
-            trySend(Result.Loading<List<Skin>>())
-
-            database.withTransaction {
-                val selectedSkins = database.skinsDao().loadMyWishlistSkins().first()
-                trySend(Result.Success<List<Skin>>(selectedSkins))
-            }
-        }
-        catch (e: Exception) {
-            trySend(Result.Error<List<Skin>>(e))
-        }
-        awaitClose {  }
-    }
-
-    @ExperimentalCoroutinesApi
-    suspend fun querySkinsByName(query: String) = callbackFlow {
-        queryJob?.cancel()
-        queryJob = launch (Dispatchers.IO) {
-            try {
-                trySend(Result.Loading<List<Skin>>())
-
-                database.withTransaction {
-                    database.skinsDao().querySkinsByName(query)
-                        .onEach {
-                            trySend(Result.Success<List<Skin>>(it))
-                        }
-                        .launchIn(this)
-                }
-            }
-            catch (e: Exception) {
-                trySend(Result.Error<List<Skin>>(e))
-            }
-        }
-
-        awaitClose {  }
-    }
 
 
     @ExperimentalCoroutinesApi
@@ -104,8 +57,6 @@ class DDragonRepository @Inject constructor(
                 updates = database.skinsDao().updateSkin(skinId, selected)
             }
 
-            Log.d("_SELEC_", "updates: $updates")
-
             trySend(Result.Success(updates > 0))
         }
         catch (e: Exception) {
@@ -114,6 +65,8 @@ class DDragonRepository @Inject constructor(
 
         awaitClose {  }
     }
+        .flowOn(Dispatchers.IO)
+
 
     private suspend fun buildChampionsDetails(version: String, championsBase: List<ChampionBase>): List<ChampionDetails> {
         val championsDetails = mutableListOf<ChampionDetails>()

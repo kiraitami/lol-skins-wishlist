@@ -13,11 +13,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.LoLWishList" >
         <activity
-            android:name=".ui.wishlist.WishlistActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            />
-        <activity
             android:name=".ui.skin.SkinsActivity"
             android:exported="true"
             android:screenOrientation="portrait"
