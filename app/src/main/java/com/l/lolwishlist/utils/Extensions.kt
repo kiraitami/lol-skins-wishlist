@@ -1,5 +1,8 @@
 package com.l.lolwishlist.utils
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import com.l.lolwishlist.data.model.ChampionBase
 
 fun Collection<ChampionBase>.removeThrash() = filterNot {
@@ -13,3 +16,18 @@ fun Collection<ChampionBase>.removeThrash() = filterNot {
                 it.id.equals("seraphine", true)
     }
     .toList()
+
+
+fun EditText.showKeyboard(context: Context) {
+    isFocusable = true
+    isFocusableInTouchMode = true
+    requestFocus()
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.showSoftInput(this, 0)
+}
+
+fun EditText.hideKeyboard(context: Context) {
+    clearFocus()
+    val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    imm.hideSoftInputFromWindow(this.windowToken, 0)
+}

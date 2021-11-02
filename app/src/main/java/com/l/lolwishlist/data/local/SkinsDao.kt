@@ -9,12 +9,12 @@ interface SkinsDao {
     @Insert(entity = Skin::class, onConflict = OnConflictStrategy.REPLACE)
     fun saveSkins(skin: List<Skin>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun saveSkin(skin: Skin)
-
     @Query("SELECT * FROM skin")
     fun loadSkins(): Flow<List<Skin>>
 
-    @Query("DELETE FROM skin WHERE id = :id")
-    fun deleteSkin(id: String)
+    @Query("SELECT * FROM skin WHERE selected = 1")
+    fun loadSelectedSkins(): Flow<List<Skin>>
+
+    @Insert(entity = Skin::class, onConflict = OnConflictStrategy.REPLACE)
+    fun updateSkin(skin: Skin)
 }

@@ -4,11 +4,14 @@ import androidx.room.withTransaction
 import com.l.lolwishlist.data.local.DDragonDatabase
 import com.l.lolwishlist.data.model.ChampionBase
 import com.l.lolwishlist.data.model.ChampionDetails
+import com.l.lolwishlist.data.model.Result
 import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.data.networkBoundResource
 import com.l.lolwishlist.data.remote.DDragonService
 import com.l.lolwishlist.utils.removeThrash
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 private const val version = "11.21.1"
@@ -31,6 +34,23 @@ class DDragonRepository @Inject constructor(
             }
         }
     )
+
+    @ExperimentalCoroutinesApi
+    suspend fun getSelectedSkins() = callbackFlow {
+        try {
+            trySend(Result.Loading<List<Skin>>())
+
+            database.withTransaction {
+                val selectedSkins = database.skinsDao().loadSelectedSkins().first()
+                trySend(Result.Success<List<Skin>>(selectedSkins))
+            }
+        }
+        catch (e: Exception) {
+            trySend(Result.Error<List<Skin>>(e))
+        }
+    }
+
+
 
     private suspend fun buildChampionsDetails(version: String, championsBase: List<ChampionBase>): List<ChampionDetails> {
         val championsDetails = mutableListOf<ChampionDetails>()

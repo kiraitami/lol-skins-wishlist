@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_all"
+    android:outlineProvider="background"
+    android:elevation="4dp"
+    android:translationZ="4dp"
+    android:layout_marginStart="24dp"
+    android:layout_marginEnd="24dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="16dp"
+    >
+
+    <EditText
+        android:id="@+id/inputSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:fontFamily="@font/my_default_font_light"
+        android:hint="@string/search"
+        android:maxLines="1"
+        android:inputType="textPersonName"
+        />
+
+    <ImageButton
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_search"
+        app:tint="@color/primary"
+        android:background="@color/transparent"
+        />
+</LinearLayout>

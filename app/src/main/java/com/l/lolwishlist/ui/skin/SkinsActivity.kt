@@ -2,29 +2,24 @@ package com.l.lolwishlist.ui.skin
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.l.lolwishlist.R
-import com.l.lolwishlist.data.remote.DDragonService
-import com.l.lolwishlist.data.repository.DDragonRepository
 import com.l.lolwishlist.databinding.ActivitySkinsBinding
 import com.l.lolwishlist.ui.SkinAdapter
 import com.l.lolwishlist.ui.SkinUIModel
+import com.l.lolwishlist.utils.hideKeyboard
+import com.l.lolwishlist.utils.showKeyboard
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SkinsActivity : AppCompatActivity() {
 
-    private lateinit var biding: ActivitySkinsBinding
+    private lateinit var binding: ActivitySkinsBinding
 
     private val viewModel: SkinsViewModel by viewModels()
 
@@ -42,11 +37,21 @@ class SkinsActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        biding = ActivitySkinsBinding.inflate(layoutInflater)
-        setContentView(biding.root)
+        binding = ActivitySkinsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         setRecycler()
         setObservers()
+        setButtons()
+    }
+
+    override fun onBackPressed() {
+        if (binding.searchView.isVisible) {
+            hideSearchView()
+        }
+        else {
+            super.onBackPressed()
+        }
     }
 
     private fun setRecycler() {
@@ -61,7 +66,7 @@ class SkinsActivity : AppCompatActivity() {
             }
         }
 
-        biding.recyclerSkins.run {
+        binding.recyclerSkins.run {
             layoutManager = lm
             adapter = adapterSkin
         }
@@ -89,6 +94,33 @@ class SkinsActivity : AppCompatActivity() {
                 }
             )
         }
+
+        binding.searchView.onTextWatch = {
+            println(it)
+        }
+
+    }
+
+    private fun setButtons() {
+        binding.searchView.onCloseClick = {
+            hideSearchView()
+        }
+
+        binding.fabSearch.setOnClickListener {
+            showSearchView()
+        }
+    }
+
+    private fun showSearchView() {
+        binding.searchView.isVisible = true
+        binding.fabSearch.isVisible = false
+        binding.searchView.editText.showKeyboard(this)
+    }
+
+    private fun hideSearchView() {
+        binding.searchView.isVisible = false
+        binding.fabSearch.isVisible = true
+        binding.searchView.editText.hideKeyboard(this)
     }
 
 }

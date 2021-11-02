@@ -4,4 +4,5 @@
     <string name="retry">Retry</string>
     <string name="wishlist">Wishlist</string>
     <string name="all_skins">All Skins</string>
+    <string name="search">Search...</string>
 </resources>
