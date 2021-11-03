@@ -32,6 +32,7 @@ class SkinAdapter(
             binding.run {
                 glide.load(skin.imageUrl)
                     .transition(DrawableTransitionOptions.withCrossFade())
+                    .error(R.drawable.ic_image_not_supported)
                     .fitCenter()
                     .override(480, 720)
                     .into(image)
