@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+    <color name="primary">#212223</color>
+
+    <color name="primaryFontColor">#ffffff</color>
+    <color name="secondaryFontColor">#adadad</color>
+
+    <color name="mainBackground">#101010</color>
+    <color name="secondaryBackground">#454545</color>
+
+    <color name="barBackground">#272727</color>
+    <color name="barIcon">#a6a6a6</color>
+
+    <color name="fabBackground">#00B6A4</color>
+    <color name="fabIcon">#212121</color>
+
+</resources>

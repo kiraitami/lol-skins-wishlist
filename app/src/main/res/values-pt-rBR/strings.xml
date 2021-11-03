@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LoL Skins Lista de Desejos</string>
+    <string name="wishlist">Lista de Desejos</string>
+    <string name="all_skins">Todas as Skins</string>
+    <string name="search">Buscar...</string>
+</resources>

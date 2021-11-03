@@ -2,8 +2,8 @@ package com.l.lolwishlist.data.repository
 
 import androidx.room.withTransaction
 import com.l.lolwishlist.data.local.DDragonDatabase
-import com.l.lolwishlist.data.model.*
 import com.l.lolwishlist.data.remote.DDragonService
+import com.l.lolwishlist.model.*
 import com.l.lolwishlist.utils.removeThrash
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

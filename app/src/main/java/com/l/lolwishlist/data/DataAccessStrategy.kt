@@ -1,6 +1,6 @@
 package com.l.lolwishlist.data
 
-import com.l.lolwishlist.data.model.Result
+import com.l.lolwishlist.model.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 

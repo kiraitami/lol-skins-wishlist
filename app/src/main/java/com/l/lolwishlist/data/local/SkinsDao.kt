@@ -4,7 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.l.lolwishlist.data.model.Skin
+import com.l.lolwishlist.model.Skin
 import kotlinx.coroutines.flow.Flow
 
 @Dao

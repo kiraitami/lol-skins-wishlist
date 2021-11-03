@@ -17,9 +17,8 @@ import com.google.android.flexbox.FlexWrap
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
 import com.l.lolwishlist.R
-import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.databinding.ActivitySkinsBinding
-import com.l.lolwishlist.ui.SkinAdapter
+import com.l.lolwishlist.model.Skin
 import com.l.lolwishlist.utils.hideKeyboard
 import com.l.lolwishlist.utils.setSafeOnClickListener
 import com.l.lolwishlist.utils.showKeyboard

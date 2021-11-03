@@ -1,4 +1,4 @@
-package com.l.lolwishlist.data.model
+package com.l.lolwishlist.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

@@ -6,8 +6,8 @@
         <item name="colorPrimaryVariant">@color/black</item>
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/gray700</item>
-        <item name="colorSecondaryVariant">@color/gray800</item>
+        <item name="colorSecondary">@color/secondaryBackground</item>
+        <item name="colorSecondaryVariant">@color/secondaryBackground</item>
         <item name="colorOnSecondary">@color/black</item>
         <item name="android:fontFamily">@font/my_default_font</item>
         <!-- Status bar color. -->
@@ -16,8 +16,7 @@
     </style>
 
     <style name="ActivityTitleText" parent="Widget.AppCompat.TextView">
-        <item name="android:textColor">@color/primary</item>
+        <item name="android:textColor">@color/primaryFontColor</item>
         <item name="android:textSize">@dimen/activity_title_size</item>
-<!--        <item name="android:layout_margin">@dimen/activity_title_margin</item>-->
     </style>
 </resources>

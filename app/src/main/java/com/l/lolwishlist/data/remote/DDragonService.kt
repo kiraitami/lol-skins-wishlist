@@ -1,7 +1,7 @@
 package com.l.lolwishlist.data.remote
 
-import com.l.lolwishlist.data.model.ChampionDetailsResponse
-import com.l.lolwishlist.data.model.ChampionsBaseResponse
+import com.l.lolwishlist.model.ChampionDetailsResponse
+import com.l.lolwishlist.model.ChampionsBaseResponse
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET

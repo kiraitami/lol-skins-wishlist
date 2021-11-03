@@ -5,9 +5,9 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.l.lolwishlist.data.model.Converter
-import com.l.lolwishlist.data.model.PatchVersion
-import com.l.lolwishlist.data.model.Skin
+import com.l.lolwishlist.model.Converter
+import com.l.lolwishlist.model.PatchVersion
+import com.l.lolwishlist.model.Skin
 
 @Database(entities = [Skin::class, PatchVersion::class], version = 11, exportSchema = false)
 @TypeConverters(Converter::class)

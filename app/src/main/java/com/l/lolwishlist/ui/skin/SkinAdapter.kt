@@ -1,4 +1,4 @@
-package com.l.lolwishlist.ui
+package com.l.lolwishlist.ui.skin
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.RequestManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.l.lolwishlist.R
-import com.l.lolwishlist.data.model.Skin
 import com.l.lolwishlist.databinding.AdapterSkinBinding
 import com.l.lolwishlist.databinding.AdapterSkinSeparatorBinding
+import com.l.lolwishlist.model.Skin
 
 
 class SkinAdapter(

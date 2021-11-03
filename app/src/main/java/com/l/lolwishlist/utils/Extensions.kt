@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
-import com.l.lolwishlist.data.model.ChampionBase
+import com.l.lolwishlist.model.ChampionBase
 
 fun Collection<ChampionBase>.removeThrash() = filterNot {
         it.id.equals("qiyana", true) ||
