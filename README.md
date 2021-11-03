@@ -7,7 +7,8 @@ A wishlist app for League of Legends Skins
 
 
 App made using:
-- MVVM
+- MVVM Architecture
 - Hilt
 - Kotlin Flow
+- Kotlin Coroutines
 - Room Database
