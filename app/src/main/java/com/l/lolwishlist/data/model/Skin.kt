@@ -15,4 +15,7 @@ data class Skin(
 ) {
     val imageUrl: String
         get() = DDragonService.getLoginScreenImageUrl(championId, num)
+
+    val fullImageUrl: String
+        get() = DDragonService.getSplashArtImageUrl(championId, num)
 }

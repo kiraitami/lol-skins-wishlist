@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:state_checked="true"
         android:drawable="@drawable/ic_favorite"
-        android:width="40dp"
-        android:height="40dp"
+        android:width="36dp"
+        android:height="36dp"
+
         />
-</layer-list>
+    <item
+        android:state_checked="false"
+        android:drawable="@drawable/ic_favorite_border"
+        android:width="36dp"
+        android:height="36dp"
+        />
+</selector>

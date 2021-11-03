@@ -2,8 +2,8 @@ package com.l.lolwishlist.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.text.PrecomputedTextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -17,13 +17,15 @@ import com.l.lolwishlist.databinding.AdapterSkinSeparatorBinding
 
 class SkinAdapter(
     private val glide: RequestManager,
-    private val onSkinClick: (skin: Skin, position: Int) -> Unit
+    private val onSkinClick: (skin: Skin, imageView: ImageView) -> Unit,
+    private val onCheckClick: (skin: Skin, position: Int) -> Unit,
 ) : ListAdapter<SkinUIModel, RecyclerView.ViewHolder>(DIFF) {
 
     class SkinViewHolder(
         private val glide: RequestManager,
         private val binding: AdapterSkinBinding,
-        private val onSkinClick: (skin: Skin, position: Int) -> Unit
+        private val onSkinClick: (skin: Skin, imageView: ImageView) -> Unit,
+        private val onCheckClick: (skin: Skin, position: Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(skin: Skin, position: Int) {
@@ -34,24 +36,30 @@ class SkinAdapter(
                     .override(480, 720)
                     .into(image)
 
-
-                itemView.setOnClickListener {
-                    onSkinClick(skin, position)
+                selectedIcon.setOnClickListener {
+                    onCheckClick(skin, position)
                 }
 
-                isSelectedGroup.isVisible = skin.selected
+                itemView.setOnClickListener {
+                    onSkinClick(skin, image)
+                }
+
+                selectedIcon.isChecked = skin.selected
             }
         }
 
         companion object {
-            fun create(parent: ViewGroup, glide: RequestManager, onSkinClick: (skin: Skin, position: Int) -> Unit): SkinViewHolder =
-                SkinViewHolder(
-                    glide,
-                    AdapterSkinBinding.inflate(
-                        LayoutInflater.from(parent.context), parent, false
-                    ),
-                    onSkinClick
-                )
+            fun create(
+                parent: ViewGroup,
+                glide: RequestManager,
+                onSkinClick: (skin: Skin, imageView: ImageView) -> Unit,
+                onCheckClick: (skin: Skin, position: Int) -> Unit): SkinViewHolder =
+                    SkinViewHolder(
+                        glide,
+                        AdapterSkinBinding.inflate(LayoutInflater.from(parent.context), parent, false),
+                        onSkinClick,
+                        onCheckClick
+                    )
         }
     }
 
@@ -81,7 +89,7 @@ class SkinAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when(viewType) {
-            R.layout.adapter_skin -> SkinViewHolder.create(parent, glide, onSkinClick)
+            R.layout.adapter_skin -> SkinViewHolder.create(parent, glide, onSkinClick, onCheckClick)
             R.layout.adapter_skin_separator -> SkinSeparatorViewHolder.create(parent)
             else -> throw IllegalStateException()
         }
@@ -110,7 +118,6 @@ class SkinAdapter(
                 uiSkinModelList.add(SkinUIModel.Separator(s))
                 uiSkinModelList.addAll(l.map { SkinUIModel.SkinItem(it) })
             }
-
         super.submitList(uiSkinModelList)
     }
 

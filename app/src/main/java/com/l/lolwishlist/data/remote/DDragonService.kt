@@ -27,6 +27,7 @@ interface DDragonService {
         const val BASE_URL = "https://ddragon.leagueoflegends.com"
 
         fun getLoginScreenImageUrl(championId: String, skinNum: Int) = BASE_URL + "/cdn/img/champion/loading/${championId}_${skinNum}.jpg"
+        fun getSplashArtImageUrl(championId: String, skinNum: Int) = BASE_URL + "/cdn/img/champion/splash/${championId}_${skinNum}.jpg"
 
         fun create(): DDragonService = Retrofit.Builder()
             .baseUrl(BASE_URL)
