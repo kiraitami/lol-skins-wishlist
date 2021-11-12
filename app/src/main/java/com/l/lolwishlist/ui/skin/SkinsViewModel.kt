@@ -15,8 +15,8 @@ class SkinsViewModel @Inject constructor(
     private val repository: DDragonRepository
 ) : ViewModel() {
 
-    private val _query = MutableLiveData<String>("")
-    private val _shouldFilterSelected = MutableLiveData<Boolean>(false)
+    private val _query = MutableLiveData<String>()
+    private val _shouldFilterSelected = MutableLiveData<Boolean>()
 
     val skins = Transformations.switchMap(_shouldFilterSelected.distinctUntilChanged()) { shouldFilterSelected ->
         Transformations.switchMap(_query.distinctUntilChanged()) { query ->

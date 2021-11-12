@@ -41,6 +41,7 @@ class SkinsActivity : AppCompatActivity() {
     }
 
     private var isWishlistVisible = false
+    private var isQuerying = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +51,9 @@ class SkinsActivity : AppCompatActivity() {
         setRecycler()
         setObservers()
         setButtons()
+
+        viewModel.updateQuery(null)
+        viewModel.shouldFilterSelected(false)
     }
 
     override fun onBackPressed() {
@@ -83,10 +87,12 @@ class SkinsActivity : AppCompatActivity() {
     private fun setObservers() {
         viewModel.skins.observe(this) { result ->
             adapterSkin.submitSkinList(result)
+            binding.progressBar.isVisible = result.isNullOrEmpty() && !isQuerying
         }
 
         binding.searchView.onTextWatch = {
             viewModel.updateQuery(it)
+            isQuerying = it.isNotBlank()
         }
     }
 

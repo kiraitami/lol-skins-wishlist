@@ -10,7 +10,7 @@ import retrofit2.http.Path
 interface DDragonService {
 
     @GET("api/versions.json")
-    suspend fun getVersions(): List<String>
+    suspend fun getVersions(): List<String>?
 
     @GET("cdn/{version}/data/en_US/champion.json")
     suspend fun getChampionsBase(

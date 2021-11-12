@@ -3,6 +3,7 @@ package com.l.lolwishlist.data.repository
 import androidx.room.withTransaction
 import com.l.lolwishlist.data.local.DDragonDatabase
 import com.l.lolwishlist.data.remote.DDragonService
+import com.l.lolwishlist.data.static.StaticSkins
 import com.l.lolwishlist.model.*
 import com.l.lolwishlist.utils.removeThrash
 import kotlinx.coroutines.Dispatchers
@@ -18,12 +19,18 @@ class DDragonRepository @Inject constructor(
 ) {
 
     fun getAllSkins() = flow<List<Skin>> {
-        val versionFromRoom = database.patchVersionDao().loadPatchVersion().firstOrNull()?.version
-        val versionFromNetwork = service.getVersions().first()
-        val skinsFromRoom = database.skinsDao().loadSkins().first()
+        var skinsFromRoom = database.skinsDao().loadSkins().first()
 
-        if (versionFromRoom != versionFromNetwork) {
-            try {
+        if(skinsFromRoom.isNullOrEmpty()) {
+            database.skinsDao().saveSkins(StaticSkins.skinsJson)
+            skinsFromRoom = database.skinsDao().loadSkins().first()
+        }
+
+        try {
+            val versionFromRoom = database.patchVersionDao().loadPatchVersion().firstOrNull()?.version
+            val versionFromNetwork = service.getVersions()?.firstOrNull()
+
+            if ((versionFromRoom != versionFromNetwork) && versionFromNetwork != null) {
                 val championsBase = service.getChampionsBase(versionFromNetwork).data.values.removeThrash()
                 val championsDetails = buildChampionsDetails(versionFromNetwork, championsBase)
                 val skinsFromNetwork = buildSkins(championsDetails)
@@ -33,14 +40,14 @@ class DDragonRepository @Inject constructor(
 
                 emit(skinsFromNetwork)
             }
-            catch (e: IOException) {
-                emit(skinsFromRoom)
-            }
-            catch (e: Exception) {
+            else {
                 emit(skinsFromRoom)
             }
         }
-        else {
+        catch (e: IOException) {
+            emit(skinsFromRoom)
+        }
+        catch (e: Exception) {
             emit(skinsFromRoom)
         }
     }
